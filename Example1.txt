@@ -1,0 +1,238 @@
+#include <iostream>
+#include <fstream>
+#include <string> 
+#include <unordered_map>
+#include <queue>
+#include "HuffmanNode.hpp"
+
+using tree = std::priority_queue<HuffmanNode*, std::vector<HuffmanNode*>, Compare>;
+
+void createHuffman(tree& minHeap) {
+	if (minHeap.size() > 1) {
+		// get the next two elements
+		HuffmanNode* left = minHeap.top();
+		minHeap.pop();
+		HuffmanNode* right = minHeap.top();
+		minHeap.pop();
+		// create a new node with the two elements
+		HuffmanNode* newNode = new HuffmanNode('\0', left->count + right->count, left, right);
+		// add the node to the tree
+		minHeap.push(newNode);
+		// recursivly call createhuffman
+		createHuffman(minHeap);
+	}
+}
+
+void huffmanCodes(HuffmanNode* node, std::unordered_map<char, std::string>& codeMap, std::string path = "") {
+	// find all the leafs
+
+	//if the node has left go into it,
+	if (node->left != nullptr) {
+
+		huffmanCodes(node->left, codeMap, path + std::to_string(0));
+	}
+	// if the node has right go into it
+	if (node->right != nullptr) {
+		huffmanCodes(node->right, codeMap, path + std::to_string(1));
+	}
+	// add the leaf to the map
+	if (node->left == nullptr && node->right == nullptr) {
+		codeMap[node->character] = path;
+	}
+}
+
+int main(int argc, char* argv[]) {
+	if (argc != 3) {
+		std::cerr << "Include an input file name and an output file name.";
+		return 1;
+	}
+	// get the file
+	std::fstream file(argv[1]);
+	if (!file) {
+		std::cerr << "Unable to read the file.";
+		return 1;
+	}
+	std::unordered_map<char, int> freqTable = std::unordered_map<char, int>();
+	char c;
+	// loop through every char in the file.
+	while (file.get(c)) {
+		// if c is not in the dictionary init it with 1
+		if (freqTable.find(c) == freqTable.end()) {
+			freqTable.insert({ c, 1 });
+		}
+		// else add it with 1
+		else {
+			freqTable[c]++;
+		}
+	}
+
+	//init minheap and iterate through unoredered map to store all k,v pairs
+	tree minHeap;
+	for (const auto& pair : freqTable) {
+		HuffmanNode* node = new HuffmanNode(pair.first, pair.second);
+		minHeap.push(node);
+	}
+
+	createHuffman(minHeap);
+
+	// create a unordered map to hold all huffmancodes
+	std::unordered_map<char, std::string> codeMap = std::unordered_map<char, std::string>();
+	// populate the unordered map
+	huffmanCodes(minHeap.top(), codeMap);
+
+	// add all codes into the file
+	std::ofstream oBitStream(argv[2], std::ios::binary);
+	for (const auto& pair : codeMap) {
+		char c = pair.first;
+		oBitStream << c;
+		oBitStream << pair.second << std::endl;
+	}
+	// add a temp E to be replaced witht the number of not bits used in the last value
+	std::streampos patchPos = oBitStream.tellp();
+	oBitStream << 'E' << std::endl;
+	int bitCount = 0;
+	unsigned char buffer = 0;
+	// rewrite every char into binary using codes in the new file 
+	std::ifstream inputFile(argv[1]);
+	while (inputFile.get(c)) {
+		//add each bit to the buffer until the count is at 8
+		std::string code(codeMap[c]);
+		for (auto bitChar : code) {
+			buffer <<= 1;
+			buffer |= bitChar == '1' ? 1 : 0;
+			bitCount++;
+			//if the buffer is at 8 write the char and reset the count
+			if (bitCount == 8) {
+				bitCount = 0;
+				oBitStream << buffer;
+			}
+		}
+	}
+	// if there are left over bits pad them with 0
+	if (bitCount != 0) {
+		buffer <<= 8 - bitCount;
+		oBitStream << buffer;
+		oBitStream.seekp(patchPos);
+		oBitStream.put(static_cast<char>('1'+ bitCount));
+	}
+	return 0;
+}
+#include <iostream>
+#include <fstream>
+#include <string> 
+#include <unordered_map>
+#include <queue>
+#include "HuffmanNode.hpp"
+
+using tree = std::priority_queue<HuffmanNode*, std::vector<HuffmanNode*>, Compare>;
+
+void createHuffman(tree& minHeap) {
+	if (minHeap.size() > 1) {
+		// get the next two elements
+		HuffmanNode* left = minHeap.top();
+		minHeap.pop();
+		HuffmanNode* right = minHeap.top();
+		minHeap.pop();
+		// create a new node with the two elements
+		HuffmanNode* newNode = new HuffmanNode('\0', left->count + right->count, left, right);
+		// add the node to the tree
+		minHeap.push(newNode);
+		// recursivly call createhuffman
+		createHuffman(minHeap);
+	}
+}
+
+void huffmanCodes(HuffmanNode* node, std::unordered_map<char, std::string>& codeMap, std::string path = "") {
+	// find all the leafs
+
+	//if the node has left go into it,
+	if (node->left != nullptr) {
+
+		huffmanCodes(node->left, codeMap, path + std::to_string(0));
+	}
+	// if the node has right go into it
+	if (node->right != nullptr) {
+		huffmanCodes(node->right, codeMap, path + std::to_string(1));
+	}
+	// add the leaf to the map
+	if (node->left == nullptr && node->right == nullptr) {
+		codeMap[node->character] = path;
+	}
+}
+
+int main(int argc, char* argv[]) {
+	if (argc != 3) {
+		std::cerr << "Include an input file name and an output file name.";
+		return 1;
+	}
+	// get the file
+	std::fstream file(argv[1]);
+	if (!file) {
+		std::cerr << "Unable to read the file.";
+		return 1;
+	}
+	std::unordered_map<char, int> freqTable = std::unordered_map<char, int>();
+	char c;
+	// loop through every char in the file.
+	while (file.get(c)) {
+		// if c is not in the dictionary init it with 1
+		if (freqTable.find(c) == freqTable.end()) {
+			freqTable.insert({ c, 1 });
+		}
+		// else add it with 1
+		else {
+			freqTable[c]++;
+		}
+	}
+
+	//init minheap and iterate through unoredered map to store all k,v pairs
+	tree minHeap;
+	for (const auto& pair : freqTable) {
+		HuffmanNode* node = new HuffmanNode(pair.first, pair.second);
+		minHeap.push(node);
+	}
+
+	createHuffman(minHeap);
+
+	// create a unordered map to hold all huffmancodes
+	std::unordered_map<char, std::string> codeMap = std::unordered_map<char, std::string>();
+	// populate the unordered map
+	huffmanCodes(minHeap.top(), codeMap);
+
+	// add all codes into the file
+	std::ofstream oBitStream(argv[2], std::ios::binary);
+	for (const auto& pair : codeMap) {
+		char c = pair.first;
+		oBitStream << c;
+		oBitStream << pair.second << std::endl;
+	}
+	// add a temp E to be replaced witht the number of not bits used in the last value
+	std::streampos patchPos = oBitStream.tellp();
+	oBitStream << 'E' << std::endl;
+	int bitCount = 0;
+	unsigned char buffer = 0;
+	// rewrite every char into binary using codes in the new file 
+	std::ifstream inputFile(argv[1]);
+	while (inputFile.get(c)) {
+		//add each bit to the buffer until the count is at 8
+		std::string code(codeMap[c]);
+		for (auto bitChar : code) {
+			buffer <<= 1;
+			buffer |= bitChar == '1' ? 1 : 0;
+			bitCount++;
+			//if the buffer is at 8 write the char and reset the count
+			if (bitCount == 8) {
+				bitCount = 0;
+				oBitStream << buffer;
+			}
+		}
+	}
+	// if there are left over bits pad them with 0
+	if (bitCount != 0) {
+		buffer <<= 8 - bitCount;
+		oBitStream << buffer;
+		oBitStream.seekp(patchPos);
+		oBitStream.put(static_cast<char>('1'+ bitCount));
+	}
+	return 0;
+}
