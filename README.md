@@ -33,7 +33,7 @@ This project is a Huffman coding visualizer and file compressor written in C++. 
 
 - This project depends on the **MIXR** framework, which requires a custom setup not included in this repository.
 - As such, **building and running the project may not be straightforward** without MIXR installed and configured.
-- For this reason, we recommend watching the demo video below to understand functionality.
+- For this reason, I recommend watching the demo video below to understand functionality.
 
 ## 🎥 Demo
 Watch a demo video showcasing the Huffman Tree Visualizer in action:
