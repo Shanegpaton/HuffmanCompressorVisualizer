@@ -4,10 +4,10 @@ This project is a Huffman coding visualizer and file compressor written in C++. 
 
 ## 🔧 Features
 
-- 📦 **File Compression & Decompression** using Huffman encoding  
-- 🌲 **Real-time Huffman Tree Visualization** powered by the MIXR framework  
-- 🔍 **Bit-level Display** of compressed data and reconstruction to original text  
-- 🧵 Written in modern **C++** with clean object-oriented design
+- **File Compression & Decompression** using Huffman encoding  
+- **Real-time Huffman Tree Visualization** powered by the MIXR framework  
+- **Bit-level Display** of compressed data and reconstruction to original text  
+- Written in modern **C++** with clean object-oriented design
 
 ## 📸 How It Works
 
@@ -36,9 +36,9 @@ This project is a Huffman coding visualizer and file compressor written in C++. 
 - For this reason, we recommend watching the demo video below to understand functionality.
 
 ## 🎥 Demo
-https://drive.google.com/file/d/1WiwrLmt7rp1k2UpgKYwtt8JPNSKQ1KEP/view
-[📺 Watch the Demo Video]([link-to-video](https://drive.google.com/file/d/1WiwrLmt7rp1k2UpgKYwtt8JPNSKQ1KEP/view))
+Watch a demo video showcasing the Huffman Tree Visualizer in action:
 
+[📺 Watch Demo on Google Drive](https://drive.google.com/file/d/1WiwrLmt7rp1k2UpgKYwtt8JPNSKQ1KEP/view)
 ## 🧠 What I Learned
 
 - Implementing Huffman encoding/decoding from scratch
